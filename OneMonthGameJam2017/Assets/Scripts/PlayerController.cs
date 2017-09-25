@@ -18,7 +18,8 @@ public class PlayerController : MonoBehaviour,DmgObjetc {
 	public float runSpeed = 2f;
     public GameObject wepon;
     public float recoverytime; //tiempo de invulneravilidad luego de ser golpeado
-    
+	[HideInInspector] public bool canMove;
+
 	bool onChangeScene;	//Boolean for changing scenes
 	bool recob;
     Vector3 forward, right;
@@ -56,7 +57,7 @@ public class PlayerController : MonoBehaviour,DmgObjetc {
     {
 
         onChangeScene = false;
-	
+		canMove = true;
         moveActualSpeed = moveSpeed;
 
         rb = GetComponent<Rigidbody>();     //Gets rigid body component
@@ -83,7 +84,7 @@ public class PlayerController : MonoBehaviour,DmgObjetc {
     private void Update()
     {
 		
-		if (Input.GetMouseButtonDown(0))    //Check if left mouse button is down
+		if (Input.GetMouseButtonDown(0) && canMove)    //Check if left mouse button is down
         {
             Attack();   //Calls attack method
            
@@ -102,9 +103,16 @@ public class PlayerController : MonoBehaviour,DmgObjetc {
 		if (Mathf.Abs (rb.velocity.y) >= 10)
 			GameManager.instance.GameOver ();
 
+		if (!canMove) 
+		{
+			horizontal = 0;
+			vertical = 0;
+		}
+		if(canMove)
+			Turning ();
+		
 		Move (horizontal, vertical, running);
-
-        Turning ();
+		
     }
 
 	/**
@@ -167,7 +175,7 @@ public class PlayerController : MonoBehaviour,DmgObjetc {
 		rb.MovePosition (transform.position + upMovement);
        
 		if (h == 0) {
-			animator.SetFloat ("Velocity", Mathf.Abs (Input.GetAxisRaw ("Horizontal")) + Mathf.Abs (Input.GetAxisRaw ("Vertical"))); //Set the value of "Velocity" in the animator
+			animator.SetFloat ("Velocity", Mathf.Abs (h) + Mathf.Abs (v)); //Set the value of "Velocity" in the animator
 			animator.SetBool ("Run", running);
 		}
 
@@ -249,6 +257,8 @@ public class PlayerController : MonoBehaviour,DmgObjetc {
 
 		nextHeal = Time.time + timeToHeal;
 
+
+
 	}
 
 	void OnTriggerStay(Collider other)
@@ -257,6 +267,7 @@ public class PlayerController : MonoBehaviour,DmgObjetc {
 			Heal();
 			nextHeal = Time.time + timeToHeal;
 		}
+			
 	}
 
 	//Cura al jugador a una tasa de 10% de la vida actual

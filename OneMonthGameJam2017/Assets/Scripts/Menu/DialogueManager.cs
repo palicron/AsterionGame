@@ -11,6 +11,7 @@ public class DialogueManager : MonoBehaviour {
     public Animator animator;
     public Queue <string> sentences;
 
+	public PlayerController playerController;
 
 
 	// Use this for initialization
@@ -18,11 +19,22 @@ public class DialogueManager : MonoBehaviour {
 
         sentences = new Queue<string> ();
 	}
+
+	void Update()
+	{
+		if (Input.GetKeyDown (KeyCode.Space)) {
+			DisplayNextSentence ();
+			Debug.Log ("spacePressed");
+		}
+	}
+		
 	
 	public void StartDialogue (Dialogue dialogue)
 
     {
-        animator.SetBool("IsOpen", true);
+		animator.SetBool("IsOpen", true);
+
+		playerController.canMove = false;
 
         nameText.text = dialogue.name;
         sentences.Clear();
@@ -73,6 +85,6 @@ public class DialogueManager : MonoBehaviour {
     {
 
         animator.SetBool("IsOpen", false);
-
+		playerController.canMove = true;
     }
 }

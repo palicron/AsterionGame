@@ -13,11 +13,9 @@ public class ButtonTrigger : MonoBehaviour {
 
     private void OnTriggerEnter(Collider col)
     {
-        if (col.gameObject.name.Equals("Player"))
-           
-            {
+		if (col.CompareTag("Player"))
+        {
             CanvasObject.SetActive(true);
-
         }
         
     }
